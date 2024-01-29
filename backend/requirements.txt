@@ -1,0 +1,8 @@
+flask
+psycopg2-binary
+Flask-SQLAlchemy
+Flask-CORS
+
+# to build the container from scrach  sudo docker compose build
+# to run the container docker compose up -d flaskapp
+# cd frontend then sudo npm run dev
