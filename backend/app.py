@@ -1,14 +1,15 @@
-from flask import request, Flask, jsonify, make_response
+from flask import request, Flask, jsonify, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from os import environ
+from transformers import pipeline
 
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
+oracle = pipeline(model="deepset/roberta-base-squad2")
 
 class User(db.Model):
     __tablename__ = "user"
@@ -96,3 +97,27 @@ def delete_user(id):
         return make_response(jsonify({'message':'user not found'}), 404)
     except Exception as e:
         return make_response(({'message': 'error deleting user', 'error':str(e)}),500)
+
+# for ml answering
+@app.route('/api/flask/answering', methods = ['POST'])
+def answering_api():
+    data = request.json
+    question = data['question']
+    context = data['context']
+    print('data')
+    print(data)
+    oracle = pipeline(model="deepset/roberta-base-squad2")
+    ans = oracle(question="Where do I live?", context="My name is Wolfgang and I live in Berlin")
+    print(ans)
+
+@app.route('/api/flask/answer/text', methods = ['POST'])
+def answerApi():
+    data = request.get_json()
+    question = data['question']
+    context = data['context']
+    ans = oracle(question=question, context=context)
+    
+
+    return jsonify({
+            'answer':ans
+        }), 201

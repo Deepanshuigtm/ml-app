@@ -13,3 +13,12 @@ body {
   background: rgb(var(--background-start-rgb));
     /* rgb(var(--backgro nund-start-rgb)); */
 }
+input[type="text"] {
+  border: 0.1px solid gray;
+  outline: none;
+}
+
+input[type="text"]:focus {
+  border: 0.1px solid blueviolet;
+  outline: none;
+}

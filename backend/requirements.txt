@@ -2,6 +2,12 @@ flask
 psycopg2-binary
 Flask-SQLAlchemy
 Flask-CORS
+transformers
+# pytorch
+# torch==2.2.1
+# tensorflow
+torch
+
 
 # to build the container from scrach  sudo docker compose build
 # to run the container docker compose up -d flaskapp
