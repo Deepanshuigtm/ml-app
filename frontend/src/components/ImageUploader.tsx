@@ -93,14 +93,14 @@ const ImageUploader = () => {
         className='mb-2 w-full p-2 border-gray-300 rounded'
         style={{ backgroundColor: 'transparent', color: 'white' }}
         />
-        <button type='submit' className='w-full p-2 text-white bg-blue-500 rounded hover:bg-blue-600'>Add User</button>
+        <button type='submit' className='w-full p-2 text-black bg-gray-300 rounded hover:bg-gray-700 hover:text-white duration-300'>Submit</button>
 
       </form>
       {answer.answer != '' && <div>
-        <p>{answer.answer}</p>
-        <p>{answer.score}</p>
-        <p>{answer.start}</p>
-        <p>{answer.end}</p>
+        <p>Answer : {answer.answer}</p>
+        <p>Score : {answer.score}</p>
+        <p>Start: {answer.start}</p>
+        <p>End : {answer.end}</p>
         </div>}
         {/* <label className="cursor-pointer bg-white text-black py-2 px-4 rounded-lg shadow-lg">
         Upload File

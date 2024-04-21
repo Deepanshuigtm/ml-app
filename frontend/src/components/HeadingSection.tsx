@@ -2,6 +2,7 @@
 
 const HeadingSection  = () => {
     return (
+        // background-image: linear-gradient(#000, #352155 59%, #36276a 95%);
         <div className="flex h-10 mt-14 flex-col ml-20">
             <div className="font-bold text-5xl mb-4">
                 Automate Task Using Ai
@@ -14,9 +15,7 @@ const HeadingSection  = () => {
             </div>
             
             <div className="w-1/6">
-            <div className="bg-blue-700 mr-9 text-white rounded px-6 py-3 hover:opacity-75 cursor-pointer">
-                    Start building
-            </div>
+            <button type="submit" className="peer hidden whitespace-nowrap rounded-full bg-gray-50 px-5 py-3 font-normal text-gray-900 duration-300 hover:cursor-pointer hover:bg-gray-300 md:flex ">Start building</button>
             </div>
 
         </div>

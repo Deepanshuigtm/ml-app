@@ -10,8 +10,8 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
-    /* rgb(var(--backgro nund-start-rgb)); */
+  background: linear-gradient(180deg, #000 40%, #352155 69%, #070510 99%);
+  height: 100vh;
 }
 input[type="text"] {
   border: 0.1px solid gray;

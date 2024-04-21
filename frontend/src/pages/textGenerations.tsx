@@ -1,9 +1,10 @@
-import ImageUploader from '../components/ImageUploader';
+
+import ImageFortText from '../components/ImageFortText';
 import NavBar from '../components/NavBar';
 import React, { useState, useEffect } from 'react';
 
 
-const newpage =() => {
+const textGenerations =() => {
     return (
         <>
         <NavBar backendName='flask' />
@@ -13,15 +14,15 @@ const newpage =() => {
             backgroundRepeat: 'repeat',
             backgroundPosition: 'center',
             backgroundSize: 'cover',
-            height:'90vh',
+            height:'87vh',
           }}
           >
             <h1 className='pt-10 flex h-10 justify-center '></h1>
             <div className="flex h-10 justify-center mt-24">
-                <div><ImageUploader/></div>
+                <div><ImageFortText/></div>
             </div>
         </div>
         </>
     );
 }
-export default newpage
+export default textGenerations
