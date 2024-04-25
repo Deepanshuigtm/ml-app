@@ -5,6 +5,7 @@ from os import environ
 from transformers import pipeline
 import whisper
 import os
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -136,4 +137,75 @@ def answerApi():
     print(ans)
     return jsonify({
             'answer':ans
+        }), 201
+
+@app.route('/api/flask/object-detection', methods = ['POST'])
+def objectDetect():
+    if 'file' not in request.files:
+        return 'No file part', 400
+    
+    file = request.files['file']
+    
+    save_dir = os.path.join(os.path.dirname(__file__), 'data')
+    os.makedirs(save_dir, exist_ok=True) 
+    save_path = os.path.join(save_dir, file.filename)
+    
+    file.save(save_path)
+    print(save_path)
+
+    from transformers import DetrImageProcessor, DetrForObjectDetection
+    import torch
+    from PIL import Image, ImageDraw, ImageFont
+
+    image = Image.open(save_path)
+
+    processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50", revision="no_timm")
+    model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50", revision="no_timm")
+
+    inputs = processor(images=image, return_tensors="pt")
+    outputs = model(**inputs)
+
+    # convert outputs (bounding boxes and class logits) to COCO API
+    # let's only keep detections with score > 0.9
+    target_sizes = torch.tensor([image.size[::-1]])
+    results = processor.post_process_object_detection(outputs, target_sizes=target_sizes, threshold=0.9)[0]
+
+    detected_objects = []
+
+    for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+        box = [round(i, 2) for i in box.tolist()]
+
+        detected_objects.append({
+        "label": model.config.id2label[label.item()],
+        "confidence": round(score.item(), 3),
+        "location": box
+    })
+        
+        print(
+                f"Detected {model.config.id2label[label.item()]} with confidence "
+                f"{round(score.item(), 3)} at location {box}"
+        )
+    draw = ImageDraw.Draw(image)
+
+    for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+        box = [round(i, 2) for i in box.tolist()]
+        x, y, x2, y2 = tuple(box)
+
+        draw.rectangle((x, y, x2, y2), outline="red", width=5)
+        draw.text((x, y), model.config.id2label[label.item()], fill="black", font_size=20)
+    
+    save_dir = os.path.join(os.path.dirname(__file__), 'image')
+    os.makedirs(save_dir, exist_ok=True) 
+    save_path = os.path.join(save_dir, file.filename)
+    
+    image.save(save_path)
+    print(save_path)
+    with open(save_path, "rb") as image_file:
+        encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+
+    # image.show()
+    print(detected_objects)
+    return jsonify({
+            'answer':detected_objects,
+            'image':encoded_image
         }), 201

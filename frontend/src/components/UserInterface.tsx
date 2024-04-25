@@ -133,7 +133,7 @@ const UserInterface : React.FC<UserInterfaceProps> = ({ backendName }) => {
         onChange={(e) => setNewUser({...newUser, email: e.target.value})}
         className='mb-2 w-full p-2 border-gray-300 rounded'
         />
-        <button type='submit' className='w-full p-2 text-white bg-white-500 rounded hover:bg-blue-600'>Submit</button>
+        <button type='submit' className='w-full p-2 text-white bg-blue-500 rounded hover:bg-blue-600'>Add User</button>
 
       </form>
       <div className="space-y-4">

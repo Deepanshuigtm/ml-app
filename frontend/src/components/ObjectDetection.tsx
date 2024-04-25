@@ -11,20 +11,21 @@ import { CButtonGroup } from '@coreui/react';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 
-const ImageFortText = () => {
+const ObjectDetection = () => {
 
     const [files, setFiles] = useState(null);
-    const handleFileChanges = (e) => {
-      const files = e.target.files;
-      setFiles(files);
-      setResponse('');
-    }
+    const [image, setImage] = useState(null);
     const isImage = (file) => file.type.startsWith('image');
     const isVideo = (file) => file.type.startsWith('video');
 
     const [response, setResponse] = useState('');
 
     const [loading, setLoading] = useState(false);
+    const handleFileChanges = (e) => {
+        const files = e.target.files;
+        setFiles(files);
+        setResponse('');
+      }
 
   const handleFileUpload = async (e) => {
     e.preventDefault();
@@ -38,11 +39,18 @@ const ImageFortText = () => {
       formData.append('file', files[0]);
       setFiles(null);
 
-      // Call your backend API to generate response
       try {
-        const apiResponse = await axios.post(`${apiUrl}/api/flask/answering`, formData)
-        console.log(apiResponse.data.answer)
+        const apiResponse = await axios.post(`${apiUrl}/api/flask/object-detection`, formData)
+
         setResponse(apiResponse.data.answer);
+
+        const data = apiResponse.data.answer;
+
+        console.log(apiResponse.data.image);
+        setImage(apiResponse.data.image);
+
+        Array.from(data).map(item => console.log(item.label));
+
         setLoading(false) // Assuming your API returns a 'response' field
       } catch (error) {
         console.error('Error fetching response from backend:', error);
@@ -52,10 +60,17 @@ const ImageFortText = () => {
     };
 
   return (
-    <div className="flex items-center justify-center flex-col mt-24">
-      {response != '' && <div>
-        <p style={{ marginBottom: '40px', paddingLeft: '40px', paddingRight: '40px' }} >{response}</p>
-        </div>}
+    <div className="flex items-center justify-center flex-col mt-10">
+      {response !== '' && (
+  <div style={{ marginBottom: '40px', paddingLeft: '40px', paddingRight: '40px' }}>
+    {Array.from(response).map((item, index) => (
+      <p key={index} style={{ marginBottom: '10px'}}>
+        Detected {item.label} with confidence {item.confidence} at location {item.location.join(', ')}
+      </p>
+    ))}
+  </div>
+)}
+
 
         <div className='flex flex-col item-center justify-center'>
           {
@@ -74,6 +89,10 @@ const ImageFortText = () => {
             })
           }
         </div>
+        <div className='flex flex-col item-center justify-center' style={{ marginBottom: '40px'}}>
+          {image && <img src={`data:image/jpeg;base64,${image}`} width={500} height={500} alt={image}/>}     
+        </div>
+
         {/* <button type='submit' onClick={handleFileUpload} className='w-full px-24 p-2 text-white bg-blue-500 rounded hover:bg-blue-600'>Submit</button> */}
 
         {files && <CAlert color="light">
@@ -85,7 +104,7 @@ const ImageFortText = () => {
           Upload File
           <input
             type="file"
-            accept="audio/*,video/*"
+            accept="image/*"
             onChange={handleFileChanges}
             className="hidden"
             required
@@ -95,7 +114,7 @@ const ImageFortText = () => {
 
         {loading && <div className='flex items-center justify-center'>
         <div style={{ marginRight: '20px' }}>
-          <p>Extracting the text. Please wait  </p>
+          <p>Detecting the objects. Please wait  </p>
         </div>
         <div>
           <ThreeDots
@@ -115,4 +134,4 @@ const ImageFortText = () => {
   );
 };
 
-export default ImageFortText;
+export default ObjectDetection;

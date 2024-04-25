@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Image from 'next/image'
+import Image from 'next/image';
+
+// const apiKey = "sk-proj-srNsiYtDmxRHKpBEZTRtT3BlbkFJBCg4bhuSfS7JCKRZ6xRz";
+// const apiKey2 = "sk-proj-oQdfDBRVBVjR1KBoDio2T3BlbkFJI38CN3SpCvTeT8pmq0JF";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -11,6 +14,28 @@ const ImageUploader = () => {
     const [response, setResponse] = useState('');
 
     const [file, setFile] = useState<File | null>(null);
+
+    const ImageGenerate = async (e) => {
+      e.preventDefault();
+
+      try {
+        const apiKey = "sk-proj-tUOfYArbsZCbkmr41X8GT3BlbkFJ5uk53crwXlMEdo9T20Kc"; // Replace "YOUR_API_KEY" with your actual API key
+        const apiText = await axios.post("https://api.openai.com/v1/images/generations", {
+          "prompt": "picture of blue cat in sea",
+          "n": 4,
+          "size": "1024x1024"
+        }, {
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          }
+        });
+        console.log(apiText);
+      } catch (error) {
+        console.error(error);
+      }
+      
+    }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -102,6 +127,7 @@ const ImageUploader = () => {
         <p>Start: {answer.start}</p>
         <p>End : {answer.end}</p>
         </div>}
+        <button onClick={ImageGenerate} className='w-full p-2 text-black bg-gray-300 rounded hover:bg-gray-700 hover:text-white duration-300'>Submit</button>
         {/* <label className="cursor-pointer bg-white text-black py-2 px-4 rounded-lg shadow-lg">
         Upload File
        <input

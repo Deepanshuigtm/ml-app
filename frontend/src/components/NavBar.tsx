@@ -21,6 +21,9 @@ const NavBar : React.FC<NavBarProps> = ({ backendName }) => {
                 <Link className={`link ${pathname === '/newpage' ? 'active' : ''}`} href="/newpage">
                 <div className="mr-8">Question Answering</div>
                 </Link>
+                <Link className={`link ${pathname === '/page3' ? 'active' : ''}`} href="/page3">
+                <div className="mr-8">Object Detection</div>
+                </Link>
                 <div className="mr-8">Customers</div>
                 <div className="mr-8">Pricing</div>
                 <div>Contact</div>
